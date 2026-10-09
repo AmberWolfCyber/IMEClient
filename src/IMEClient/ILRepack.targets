@@ -1,0 +1,24 @@
+<Project>
+  <Target Name="ILRepackMerge" AfterTargets="Build">
+    <ItemGroup>
+      <InputAssemblies Include="$(OutputPath)$(TargetName)$(TargetExt)" />
+      <InputAssemblies Include="$(OutputPath)*.dll" />
+    </ItemGroup>
+
+    <ILRepack
+        Parallel="true"
+        DebugInfo="$(DebugSymbols)"
+        AllowDuplicateResources="false"
+        InputAssemblies="@(InputAssemblies)"
+        TargetKind="SameAsPrimaryAssembly"
+        OutputFile="$(OutputPath)$(TargetName)$(TargetExt)"
+    />
+  </Target>
+
+  <Target Name="ILRepackCleanup" AfterTargets="ILRepackMerge">
+    <ItemGroup>
+      <MergedAssemblies Include="$(OutputPath)*.dll" />
+    </ItemGroup>
+    <Delete Files="@(MergedAssemblies)" />
+  </Target>
+</Project>

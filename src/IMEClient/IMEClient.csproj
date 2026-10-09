@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net481</TargetFramework>
+    <AssemblyName>IMEClient</AssemblyName>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+    <EmbedAllSources>false</EmbedAllSources>
+    <DeterministicSourcePaths>false</DeterministicSourcePaths>
+  </PropertyGroup>
+  <Target Name="ClearEmbeddedFiles" BeforeTargets="CoreCompile" Condition="'$(Configuration)' == 'Release'">
+    <ItemGroup>
+      <EmbeddedFiles Remove="@(EmbeddedFiles)" />
+    </ItemGroup>
+  </Target>
+  <!-- Per-plugin payloads: drop DLLs/EXEs into payloads/ named to match each
+       plugin's PayloadResourceName (e.g. payload.dll, dxsetup.dll).
+       LogicalName strips the path so resource lookup is just the filename. -->
+  <ItemGroup>
+    <EmbeddedResource Include="payloads\*.dll;payloads\*.exe">
+      <LogicalName>%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
+    <None Include="payloads\*" Exclude="payloads\*.dll;payloads\*.exe" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Net.Http" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.48">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.Text.Json" Version="10.0.12" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.23.0" />
+  </ItemGroup>
+</Project>
